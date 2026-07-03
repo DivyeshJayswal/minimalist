@@ -111,7 +111,14 @@ OpenCode also auto-loads this repo's `AGENTS.md`.
 hermes plugins install DivyeshJayswal/minimalist --enable
 ```
 
-**OpenClaw** — skills ship in `.openclaw/skills/`; point your skills path at the repo.
+**OpenClaw**
+```bash
+clawhub install @divyeshjayswal/minimalist
+```
+The review, audit, gain, and help skills install the same way
+(`clawhub install @divyeshjayswal/minimalist-review`, and so on — the `@divyeshjayswal/`
+prefix disambiguates from unrelated same-named skills on the registry). Without
+ClawHub, skills ship in `.openclaw/skills/`; point your skills path at the repo.
 
 **Cursor · Windsurf · Cline · Kiro · Devin · CodeWhale · Swival** — rule files
 are pre-generated, copy the one you need: `.cursor/rules/minimalist.mdc`,
