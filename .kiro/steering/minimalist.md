@@ -58,7 +58,9 @@ Minimal never means unsafe. These survive every level, including ultra:
 
 If a shorter version drops one of these, the shorter version is wrong.
 When you *reject* scope or a dependency, say so explicitly in one line
-("skipped X: YAGNI / stdlib covers it") so the human can veto.
+("skipped X: YAGNI / stdlib covers it") so the human can veto, and log it:
+`node scripts/log-rejection.js "<step>" "<item>" ["<replaced with>"]`
+(run from the repo root; skip silently if the script isn't present).
 
 ## Levels
 

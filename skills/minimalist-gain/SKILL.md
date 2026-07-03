@@ -9,10 +9,14 @@ license: MIT
 
 # Minimalist Gain
 
-Report only measured or directly countable facts from this session:
-- Scope rejected (each YAGNI call you made, one line each).
-- Dependencies declined and what replaced them.
-- LOC of the shipped diff vs. the LOC of the approach you rejected, when both were actually drafted; otherwise say "not measured".
+Run `node scripts/log-rejection.js --report` from the repo root and report its
+output verbatim (or summarized, not altered) — this is the persisted ledger of
+every rejected-scope line logged across sessions, not just this one. If the
+script is missing or the ledger is empty, say so plainly instead of falling
+back to memory.
 
-Never extrapolate to cost or percentages you did not compute. If nothing was
-measured, say exactly that and point to `benchmarks/` for reproducible numbers.
+Also report, only if actually countable this session:
+- LOC of the shipped diff vs. the LOC of the approach you rejected, when both were actually drafted.
+
+Never extrapolate to cost or percentages you did not compute. Point to
+`benchmarks/` for reproducible aggregate numbers.
