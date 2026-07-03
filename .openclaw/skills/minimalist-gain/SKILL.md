@@ -11,9 +11,11 @@ license: MIT
 
 Run `node scripts/log-rejection.js --report` from the repo root and report its
 output verbatim (or summarized, not altered) — this is the persisted ledger of
-every rejected-scope line logged across sessions, not just this one. If the
-script is missing or the ledger is empty, say so plainly instead of falling
-back to memory.
+every rejected-scope line logged across sessions, not just this one. Its
+"lines avoided" total, when present, is the *agent's estimate* at logging
+time, not a measurement — keep that label attached, don't restate it as a
+hard number. If the script is missing or the ledger is empty, say so plainly
+instead of falling back to memory.
 
 Also report, only if actually countable this session:
 - LOC of the shipped diff vs. the LOC of the approach you rejected, when both were actually drafted.

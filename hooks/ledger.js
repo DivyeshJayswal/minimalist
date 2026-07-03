@@ -8,15 +8,18 @@ const { configDir } = require('./config');
 
 function ledgerPath() { return path.join(configDir(), 'ledger.jsonl'); }
 
-function appendEntry({ step, item, replacedWith, task }) {
+function appendEntry({ step, item, replacedWith, task, locAvoidedEstimate }) {
   if (!step || !item) throw new Error('ledger entry needs step and item');
   const dir = configDir();
   fs.mkdirSync(dir, { recursive: true });
+  const loc = Number(locAvoidedEstimate);
   const line = JSON.stringify({
     at: new Date().toISOString(),
     step, item,
     replacedWith: replacedWith || null,
     task: task || null,
+    // agent's estimate of the rejected approach's size, never a measurement
+    locAvoidedEstimate: Number.isFinite(loc) && loc > 0 ? loc : null,
   }) + '\n';
   const tmp = path.join(dir, `.ledger.${process.pid}.${Date.now()}.tmp`);
   const existing = fs.existsSync(ledgerPath()) ? fs.readFileSync(ledgerPath(), 'utf8') : '';

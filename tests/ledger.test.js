@@ -54,3 +54,20 @@ test('atomic write leaves no tmp files behind', () => {
   l.appendEntry({ step: 'yagni', item: 'x' });
   assert.ok(!fs.readdirSync(dir).some(f => f.includes('.tmp')));
 });
+
+test('locAvoidedEstimate persists as a number when valid', () => {
+  const l = ledger();
+  l.appendEntry({ step: 'platform', item: 'date picker lib', locAvoidedEstimate: '80' });
+  assert.strictEqual(l.readEntries()[0].locAvoidedEstimate, 80);
+});
+
+test('locAvoidedEstimate is null when absent, zero, or non-numeric', () => {
+  const l = ledger();
+  l.appendEntry({ step: 'yagni', item: 'a' });
+  l.appendEntry({ step: 'yagni', item: 'b', locAvoidedEstimate: '0' });
+  l.appendEntry({ step: 'yagni', item: 'c', locAvoidedEstimate: 'not a number' });
+  const entries = l.readEntries();
+  assert.strictEqual(entries[0].locAvoidedEstimate, null);
+  assert.strictEqual(entries[1].locAvoidedEstimate, null);
+  assert.strictEqual(entries[2].locAvoidedEstimate, null);
+});
