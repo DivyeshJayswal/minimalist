@@ -1,0 +1,4 @@
+# Force LF everywhere: build-mirrors.js compares checked-out mirror files
+# byte-for-byte against skills/*/SKILL.md, and Windows runners' default
+# core.autocrlf=true converts LF -> CRLF on checkout, breaking that check.
+* text=auto eol=lf
