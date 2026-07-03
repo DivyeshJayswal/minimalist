@@ -1,0 +1,8 @@
+{
+  "name": "minimalist",
+  "version": "1.0.0",
+  "description": "Subtraction-first engineering for AI agents.",
+  "contextFileName": "AGENTS.md",
+  "commands": "./commands",
+  "skills": "./skills"
+}

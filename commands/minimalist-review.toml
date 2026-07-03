@@ -1,0 +1,5 @@
+description = "Review a diff or file for bloat"
+prompt = """
+Invoke the 'minimalist-review' skill now. Skill file: skills/minimalist-review/SKILL.md.
+Arguments from the user: {{args}}
+"""

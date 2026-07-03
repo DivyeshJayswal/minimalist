@@ -1,0 +1,5 @@
+node_modules/
+benchmarks/arms/minimalist.txt
+benchmarks/results/*.json
+*.tmp
+.DS_Store

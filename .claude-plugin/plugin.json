@@ -1,0 +1,11 @@
+{
+  "name": "minimalist",
+  "version": "1.0.0",
+  "description": "Subtraction-first engineering for AI agents. The smallest correct change wins.",
+  "author": { "name": "Divyesh" },
+  "homepage": "https://github.com/DivyeshJayswal/minimalist",
+  "license": "MIT",
+  "hooks": "./hooks/hooks.json",
+  "skills": "./skills",
+  "commands": "./commands"
+}

@@ -1,0 +1,9 @@
+name: minimalist
+version: 1.0.0
+description: Subtraction-first engineering. Smallest correct change wins.
+skills:
+  - path: ./skills/minimalist
+  - path: ./skills/minimalist-review
+  - path: ./skills/minimalist-audit
+  - path: ./skills/minimalist-gain
+  - path: ./skills/minimalist-help

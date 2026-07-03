@@ -1,0 +1,5 @@
+description = "Set level or toggle: /minimalist [lite|full|ultra|off]"
+prompt = """
+Invoke the 'minimalist' skill now. Skill file: skills/minimalist/SKILL.md.
+Arguments from the user: {{args}}
+"""

@@ -1,0 +1,11 @@
+{
+  "name": "minimalist",
+  "owner": { "name": "Divyesh" },
+  "plugins": [
+    {
+      "name": "minimalist",
+      "source": ".",
+      "description": "Subtraction-first engineering: smallest correct change, guardrails intact."
+    }
+  ]
+}

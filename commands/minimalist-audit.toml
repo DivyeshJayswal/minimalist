@@ -1,0 +1,5 @@
+description = "Rank deletion candidates in the codebase"
+prompt = """
+Invoke the 'minimalist-audit' skill now. Skill file: skills/minimalist-audit/SKILL.md.
+Arguments from the user: {{args}}
+"""

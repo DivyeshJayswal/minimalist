@@ -1,0 +1,5 @@
+description = "Report measured savings only"
+prompt = """
+Invoke the 'minimalist-gain' skill now. Skill file: skills/minimalist-gain/SKILL.md.
+Arguments from the user: {{args}}
+"""

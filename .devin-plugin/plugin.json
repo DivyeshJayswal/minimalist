@@ -1,0 +1,6 @@
+{
+  "name": "minimalist",
+  "version": "1.0.0",
+  "description": "Subtraction-first engineering. Rules in skills/minimalist/SKILL.md.",
+  "rules": ["./skills/minimalist/SKILL.md"]
+}

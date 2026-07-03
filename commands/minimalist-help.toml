@@ -1,0 +1,5 @@
+description = "Explain minimalist in under 15 lines"
+prompt = """
+Invoke the 'minimalist-help' skill now. Skill file: skills/minimalist-help/SKILL.md.
+Arguments from the user: {{args}}
+"""
