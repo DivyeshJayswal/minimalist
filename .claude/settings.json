@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --test ./tests)",
+      "Bash(node --test --help)",
+      "Bash(node -e \"process.exit\\(0\\)\" --test-help)",
+      "Bash(node --test)",
+      "Bash(node --test tests/*.test.js)"
+    ]
+  }
+}
