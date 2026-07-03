@@ -13,7 +13,7 @@
   "files": ["AGENTS.md", "hooks/", "skills/", "commands/", ".opencode/", "pi-extension/", "assets/", "LICENSE"],
   "engines": { "node": ">=18" },
   "scripts": {
-    "test": "node --test tests/*.test.js && npm test --prefix pi-extension",
+    "test": "node --test \"tests/**/*.test.js\" && npm test --prefix pi-extension",
     "mirrors": "node scripts/build-mirrors.js",
     "mirrors:check": "node scripts/build-mirrors.js --check",
     "bench:mock": "node benchmarks/run.js --mock",

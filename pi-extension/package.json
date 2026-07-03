@@ -4,5 +4,5 @@
   "private": true,
   "type": "commonjs",
   "main": "index.js",
-  "scripts": { "test": "node --test test/*.test.js" }
+  "scripts": { "test": "node --test \"test/**/*.test.js\"" }
 }
