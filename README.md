@@ -1,39 +1,63 @@
 <h1 align="center">◇ Minimalist</h1>
 
 <p align="center">
-  <em>The best PR is the one that deletes code. The second best barely adds any.</em>
+  <em>Every line your agent didn't write is a line nobody has to fix at 3 a.m.</em>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT">
   <img src="https://img.shields.io/badge/runtime%20deps-0-111111?style=flat-square" alt="zero deps">
-  <img src="https://img.shields.io/badge/tests-43%20passing-111111?style=flat-square" alt="tests">
+  <img src="https://img.shields.io/badge/tests-49%20passing-111111?style=flat-square" alt="tests">
+  <img src="https://img.shields.io/badge/receipts-not%20vibes-111111?style=flat-square" alt="receipts, not vibes">
 </p>
 
 ---
 
-Your agent gets a two-line ticket and returns a framework. minimalist makes it
-walk a descent before writing anything: does this need to exist → does the
-codebase have it → does the stdlib → does the platform → does an installed
-dep → can it be one line → only then, minimum new code.
+Ask your agent for a date picker. It installs a library, writes a wrapper
+component, a stylesheet, and a paragraph about timezones you didn't ask for.
 
-## Example
-
-Ask for a date picker. Default output: a picker library, a wrapper component,
-a stylesheet, a timezone essay.
+**Minimalist** makes it stop and check first: does this need to exist → is it
+already in the codebase → does the stdlib have it → does the platform have it
+→ is it one line → *only then* write new code. Every step it skips, it says
+so — and now it writes that down too, not just says it once and forgets.
 
 ```html
-<!-- descent step 4: the platform has one -->
+<!-- descent step 4: the platform already has one -->
 <input type="date">
 ```
 
-## Guardrail
+## The part nobody else ships: receipts
+
+Every "less code" tool tells you to trust the vibes. Minimalist keeps a
+ledger. Every time the descent rejects a dependency, an abstraction, or a
+speculative config option, it's logged — not just mentioned once in chat and
+gone:
+
+```
+$ node scripts/log-rejection.js --report
+3 rejected-scope entries in ~/.minimalist/ledger.jsonl
+
+- [platform] date picker library -> <input type="date">
+- [yagni] config flag for a value that never changes
+- [stdlib] custom debounce helper -> AbortController + setTimeout
+
+By step:
+  platform: 1
+  yagni: 1
+  stdlib: 1
+```
+
+`/minimalist-gain` reads that file, not the model's memory of the last five
+minutes. Cross-session, inspectable, `grep`-able. If your tech lead wants to
+know what the agent talked itself out of building this sprint, that's a
+ten-second `cat`, not a re-prompt and a shrug.
+
+## Not lazy — accountable
 
 Minimal never means unsafe. These are never cut, at any level: input
 validation, authN/authZ, rate limits, error handling on fallible ops,
 resource cleanup, tests. If a shorter version drops one of these, the shorter
-version is wrong. Rejected scope is announced in one line ("skipped X:
-YAGNI") so you can veto.
+version is wrong — and it doesn't ship.
 
 ## Install
 
@@ -107,13 +131,13 @@ node scripts/uninstall.js
 | `/minimalist [lite\|full\|ultra\|off]` | set intensity (default **full**) |
 | `/minimalist-review` | review a diff for bloat — and for missing guards |
 | `/minimalist-audit` | ranked deletion candidates across the codebase |
-| `/minimalist-gain` | measured savings only — never invented |
+| `/minimalist-gain` | the ledger, read back — measured, never invented |
 | `/minimalist-help` | the whole tool in 15 lines |
 
 lite advises, full enforces, ultra ships the diff with ≤3 lines of prose. The
 guardrail holds at all three. `stop minimalist` / `normal mode` also works.
 
-## Numbers
+## Numbers, reproduced by you
 
 ```bash
 node benchmarks/run.js --repo <target-repo> --model haiku --n 4   # real run
@@ -126,18 +150,20 @@ traversal, SQLi, token forgery, malformed input, rate limits, authz) that
 fails a run if a guard line is deleted and not restored. Mock runs are
 watermarked "do not publish" — only real runs are. Every `benchmarks/arms/*.txt`
 becomes an arm, so you can drop in another project's ruleset and compare
-directly yourself.
+directly, yourself, on your own repo. We don't publish a number we didn't
+run.
 
 ## How it works
 
 One skill file (`skills/minimalist/SKILL.md`) is the source of truth; every
 per-agent copy is generated from it (`npm run mirrors`), and CI fails on
-drift. For Claude Code/Codex/Copilot it rides two lifecycle hooks
-(`UserPromptSubmit` injects the ruleset and parses `/minimalist` switches;
-`SubagentStart` makes subagents inherit the level). For Gemini/OpenCode/Pi it
-loads as extension context. For rule-file agents it's a generated copy. Level
-state lives in `~/.minimalist/config.json`, written atomically, merged never
-overwritten.
+drift — across ubuntu, macOS, and Windows. For Claude Code/Codex/Copilot it
+rides two lifecycle hooks (`UserPromptSubmit` injects the ruleset and parses
+`/minimalist` switches; `SubagentStart` makes subagents inherit the level).
+For Gemini/OpenCode/Pi it loads as extension context. For rule-file agents
+it's a generated copy. Level state lives in `~/.minimalist/config.json`,
+written atomically, merged never overwritten. Rejected scope lives in
+`~/.minimalist/ledger.jsonl`, appended never truncated.
 
 If another instruction-injecting skill is detected (output-style or
 code-minimal), minimalist yields prose-style decisions to it and keeps code
@@ -147,7 +173,7 @@ contradictory instructions.
 ## Development
 
 ```bash
-npm test              # 43 tests, node:test, zero dependencies
+npm test              # 49 tests, node:test, zero dependencies
 npm run mirrors       # regenerate per-agent rule copies from SKILL.md
 npm run mirrors:check # CI drift gate
 npm run bench:mock    # validate the benchmark pipeline for free
@@ -157,4 +183,4 @@ CI runs ubuntu / macos / windows × Node 18/20/22.
 
 ---
 
-<p align="center"><em>Write less. Ship more. Break nothing.</em></p>
+<p align="center"><em>Write less. Prove it. Break nothing.</em></p>
