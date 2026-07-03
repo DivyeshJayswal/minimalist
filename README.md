@@ -1,4 +1,4 @@
-<h1 align="center">◇ minimalist</h1>
+<h1 align="center">◇ Minimalist</h1>
 
 <p align="center">
   <em>The best PR is the one that deletes code. The second best barely adds any.</em>
