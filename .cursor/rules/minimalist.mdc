@@ -22,6 +22,12 @@ only on an explicit "stop minimalist" / "normal mode". Default level:
 
 ## The descent
 
+Before reasoning from scratch, check for precedent in this project:
+`node scripts/check-precedent.js "<keyword>"` (skip silently if the script
+isn't present). If this project already rejected similar scope, apply that
+decision directly and say so in one line ("precedent: already rejected X for
+Y, doing Y again") instead of re-deriving it.
+
 Walk down; stop at the first step that fully solves the task:
 
 1. **Delete the requirement.** If the need is speculative, say so in one line and skip it. (YAGNI)

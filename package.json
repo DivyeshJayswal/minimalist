@@ -10,10 +10,10 @@
   "bugs": { "url": "https://github.com/DivyeshJayswal/minimalist/issues" },
   "main": "./.opencode/plugins/minimalist.mjs",
   "exports": { ".": "./.opencode/plugins/minimalist.mjs", "./plugin": "./.opencode/plugins/minimalist.mjs" },
-  "files": ["AGENTS.md", "hooks/", "skills/", "commands/", "scripts/log-rejection.js", ".opencode/", "pi-extension/", "assets/", "LICENSE"],
+  "files": ["AGENTS.md", "hooks/", "skills/", "commands/", "scripts/log-rejection.js", "scripts/check-precedent.js", ".opencode/", "pi-extension/", "assets/", "LICENSE"],
   "engines": { "node": ">=18" },
   "scripts": {
-    "test": "node --test tests/chart.test.js tests/config.test.js tests/deconflict.test.js tests/hooks.test.js tests/instructions.test.js tests/judge.test.js tests/ledger.test.js tests/loc.test.js tests/mirrors.test.js tests/mode-tracker.test.js tests/skills.test.js && npm test --prefix pi-extension",
+    "test": "node --test tests/check-precedent.test.js tests/chart.test.js tests/config.test.js tests/deconflict.test.js tests/hooks.test.js tests/instructions.test.js tests/judge.test.js tests/ledger.test.js tests/loc.test.js tests/mirrors.test.js tests/mode-tracker.test.js tests/skills.test.js && npm test --prefix pi-extension",
     "mirrors": "node scripts/build-mirrors.js",
     "mirrors:check": "node scripts/build-mirrors.js --check",
     "bench:mock": "node benchmarks/run.js --mock",
