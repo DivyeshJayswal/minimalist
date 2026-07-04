@@ -1,0 +1,5 @@
+description = "Subtraction-first mode for non-coding tasks: /minimalist-general [lite|full|ultra|off]"
+prompt = """
+Invoke the 'minimalist-general' skill now. Skill file: skills/minimalist-general/SKILL.md.
+Arguments from the user: {{args}}
+"""

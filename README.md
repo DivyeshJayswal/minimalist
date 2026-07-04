@@ -19,7 +19,28 @@
 
 ---
 
-Same task, same result, fewer tokens spent getting there - because the
+**What it does:** makes your AI coding agent write less code for the same
+result — and keeps a written record of every shortcut it took, so nobody
+has to take its word for it.
+
+Ask your agent for a date picker. Left alone, it installs a library, writes
+a wrapper component, a stylesheet, and a paragraph about timezones you
+didn't ask for. With minimalist:
+
+```html
+<!-- descent step 4: the platform already has one -->
+<input type="date">
+```
+
+**Minimalist** makes it stop and check first: does this need to exist → is it
+already in the codebase → does the stdlib have it → does the platform have it
+→ is it one line → *only then* write new code. Every step it skips, it says
+so — and now it writes that down too, not just says it once and forgets.
+
+<details>
+<summary>The longer version, if you want the vibe</summary>
+
+Same task, same result, fewer tokens spent getting there — because the
 agent stops reaching for a library, a wrapper, and a config file the moment
 a one-liner already does the job. Picture an auditor, not a hype man.
 Doesn't get excited about your new dependency. Doesn't say "nice work" to
@@ -30,18 +51,7 @@ interrogated; every line it cuts, it writes down — so the audit trail
 outlives the conversation, and the same question never gets re-argued
 twice.
 
-Ask your agent for a date picker. It installs a library, writes a wrapper
-component, a stylesheet, and a paragraph about timezones you didn't ask for.
-
-**Minimalist** makes it stop and check first: does this need to exist → is it
-already in the codebase → does the stdlib have it → does the platform have it
-→ is it one line → *only then* write new code. Every step it skips, it says
-so — and now it writes that down too, not just says it once and forgets.
-
-```html
-<!-- descent step 4: the platform already has one -->
-<input type="date">
-```
+</details>
 
 > [!TIP]
 > **Turn it on:** it's active by default the moment the plugin's installed.
@@ -60,7 +70,12 @@ so — and now it writes that down too, not just says it once and forgets.
 > is either a real measured run or explicitly marked as not yet run — see that
 > section for the current status.
 
-## The part nobody else ships: the ledger
+## The ledger: a file, not a promise
+
+**In short:** every time the agent decides not to add a dependency or write
+extra code, that decision gets saved to a file on your machine — so you (or
+anyone on your team) can check later what it skipped and why, instead of
+just trusting it said so once in chat.
 
 Every "less code" tool tells you to trust the vibes. Minimalist keeps a
 ledger. Every time the descent rejects a dependency, an abstraction, or a
@@ -182,15 +197,23 @@ node scripts/uninstall.js
 | command | does |
 |---|---|
 | `/minimalist [lite\|full\|ultra\|off]` | set intensity (default **full**) |
+| `/minimalist-general [lite\|full\|ultra\|off]` | same discipline for non-coding work: writing, planning, research |
 | `/minimalist-review` | review a diff for bloat — and for missing guards |
 | `/minimalist-audit` | ranked deletion candidates across the codebase |
 | `/minimalist-gain` | the ledger, read back — measured, never invented |
 | `/minimalist-help` | the whole tool in 15 lines |
 
-lite advises, full enforces, ultra ships the diff with ≤3 lines of prose. The
-guardrail holds at all three. `stop minimalist` / `normal mode` also works.
+**lite** just flags over-engineering and lets you decide. **full** (the
+default) actually enforces the rules. **ultra** goes further and keeps its
+own explanations to almost nothing. The safety guardrail never turns off,
+at any of the three. Say "stop minimalist" or "normal mode" to switch it
+off entirely.
 
 ## Numbers, reproduced by you
+
+**In short:** we haven't published a real "X% less code" number yet, on
+purpose — the tool to measure it exists and you can run it yourself right
+now, on your own repo.
 
 **Status: no real run published yet.** The harness is built and mock-validated;
 a real benchmark run hasn't happened. This section stays here so the day it
@@ -211,6 +234,10 @@ directly, yourself, on your own repo. We don't publish a number we didn't
 run.
 
 ## How it works
+
+**In short:** one instructions file gets copied into whatever format each AI
+tool expects, so you get the same rules everywhere without maintaining nine
+different versions by hand.
 
 One skill file (`skills/minimalist/SKILL.md`) is the source of truth; every
 per-agent copy is generated from it (`npm run mirrors`), and CI fails on

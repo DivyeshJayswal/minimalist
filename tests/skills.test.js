@@ -3,7 +3,7 @@ const { test } = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs'); const path = require('path');
 
-const skills = ['minimalist', 'minimalist-review', 'minimalist-audit', 'minimalist-gain', 'minimalist-help'];
+const skills = ['minimalist', 'minimalist-general', 'minimalist-review', 'minimalist-audit', 'minimalist-gain', 'minimalist-help'];
 test('every skill has valid frontmatter with name + description', () => {
   for (const s of skills) {
     const md = fs.readFileSync(path.join(__dirname, '..', 'skills', s, 'SKILL.md'), 'utf8');
