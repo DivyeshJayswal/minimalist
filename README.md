@@ -7,7 +7,7 @@
 
 
 <p align="center">
-  <em>Every line your agent didn't write is a line nobody has to fix at 3 a.m.</em>
+  <em>Fewer tokens, same output - and it remembers why, every time!</em>
 </p>
 
 <p align="center">
@@ -19,12 +19,16 @@
 
 ---
 
-Picture an auditor, not a hype man. Doesn't get excited about your new
-dependency. Doesn't say "nice work" to fifty lines that do the job of five.
-Reads the diff, asks what's load-bearing and what's decoration, and only
-signs off on the version that survives both questions. Every line it lets
-through has already been interrogated; every line it cuts, it writes down —
-so the audit trail outlives the conversation.
+Same task, same result, fewer tokens spent getting there - because the
+agent stops reaching for a library, a wrapper, and a config file the moment
+a one-liner already does the job. Picture an auditor, not a hype man.
+Doesn't get excited about your new dependency. Doesn't say "nice work" to
+fifty lines that do the job of five. Reads the diff, asks what's
+load-bearing and what's decoration, and only signs off on the version that
+survives both questions. Every line it lets through has already been
+interrogated; every line it cuts, it writes down — so the audit trail
+outlives the conversation, and the same question never gets re-argued
+twice.
 
 Ask your agent for a date picker. It installs a library, writes a wrapper
 component, a stylesheet, and a paragraph about timezones you didn't ask for.
