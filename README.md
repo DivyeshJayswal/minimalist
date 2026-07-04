@@ -19,9 +19,12 @@
 
 ---
 
-**What it does:** makes your AI coding agent write less code for the same
-result — and keeps a written record of every shortcut it took, so nobody
-has to take its word for it.
+**What it does:** makes your AI agent produce less for the same result -
+less code, less prose, fewer unnecessary steps, fewer tokens spent getting
+there - and keeps a written record of every shortcut it took, so nobody
+has to take its word for it. It ships as two separate skills: `/minimalist`
+for coding tasks, `/minimalist-general` for everything else (writing,
+planning, research, decisions).
 
 Ask your agent for a date picker. Left alone, it installs a library, writes
 a wrapper component, a stylesheet, and a paragraph about timezones you
@@ -36,6 +39,8 @@ didn't ask for. With minimalist:
 already in the codebase → does the stdlib have it → does the platform have it
 → is it one line → *only then* write new code. Every step it skips, it says
 so — and now it writes that down too, not just says it once and forgets.
+`/minimalist-general` runs the same descent for non-coding work — same
+questions, asked about a plan or a document instead of a diff.
 
 <details>
 <summary>The longer version, if you want the vibe</summary>
@@ -69,6 +74,20 @@ twice.
 > Every claim under [Numbers, reproduced by you](#numbers-reproduced-by-you)
 > is either a real measured run or explicitly marked as not yet run — see that
 > section for the current status.
+
+## Recent updates
+
+- **`/minimalist-general`** — the same subtraction discipline, as a
+  separate skill for non-coding work (writing, planning, research). Doesn't
+  touch the coding skill's rules; use whichever one matches the task.
+- **Precedent check** — before reasoning about scope from scratch, the
+  agent checks this project's own rejection history (`scripts/check-precedent.js`)
+  and reuses a past decision instead of re-arguing it.
+- **The ledger** — every rejected dependency or abstraction gets logged to
+  a real file (`~/.minimalist/ledger.jsonl`), readable across sessions —
+  see [The ledger](#the-ledger-a-file-not-a-promise) below.
+- **Statusline** — shows real session cost/tokens and the ledger's
+  rejection count, no invented "saved" figure.
 
 ## The ledger: a file, not a promise
 
@@ -196,8 +215,8 @@ node scripts/uninstall.js
 
 | command | does |
 |---|---|
-| `/minimalist [lite\|full\|ultra\|off]` | set intensity (default **full**) |
-| `/minimalist-general [lite\|full\|ultra\|off]` | same discipline for non-coding work: writing, planning, research |
+| `/minimalist [lite\|full\|ultra\|off]` | for coding tasks — set intensity (default **full**) |
+| `/minimalist-general [lite\|full\|ultra\|off]` | for everything else: writing, planning, research |
 | `/minimalist-review` | review a diff for bloat — and for missing guards |
 | `/minimalist-audit` | ranked deletion candidates across the codebase |
 | `/minimalist-gain` | the ledger, read back — measured, never invented |
