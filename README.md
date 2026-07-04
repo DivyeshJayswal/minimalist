@@ -14,10 +14,17 @@
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT">
   <img src="https://img.shields.io/badge/runtime%20deps-0-111111?style=flat-square" alt="zero deps">
   <img src="https://github.com/DivyeshJayswal/minimalist/actions/workflows/test.yml/badge.svg" alt="tests">
-  <img src="https://img.shields.io/badge/receipts-not%20vibes-111111?style=flat-square" alt="receipts, not vibes">
+  <img src="https://img.shields.io/github/last-commit/DivyeshJayswal/minimalist?style=flat-square&color=111111" alt="last commit">
 </p>
 
 ---
+
+Picture an auditor, not a hype man. Doesn't get excited about your new
+dependency. Doesn't say "nice work" to fifty lines that do the job of five.
+Reads the diff, asks what's load-bearing and what's decoration, and only
+signs off on the version that survives both questions. Every line it lets
+through has already been interrogated; every line it cuts, it writes down —
+so the audit trail outlives the conversation.
 
 Ask your agent for a date picker. It installs a library, writes a wrapper
 component, a stylesheet, and a paragraph about timezones you didn't ask for.
@@ -32,7 +39,24 @@ so — and now it writes that down too, not just says it once and forgets.
 <input type="date">
 ```
 
-## The part nobody else ships: receipts
+> [!TIP]
+> **Turn it on:** it's active by default the moment the plugin's installed.
+> Switch modes with `/minimalist lite|full|ultra|off`, or say "stop minimalist" /
+> "normal mode" to step out any time.
+
+> [!NOTE]
+> **Speak your tongue.** Prose-trimming only ever applies to *this skill's own*
+> explanations. Your code, your comments, your non-English or mixed-language
+> text are never "simplified" — articles and particles carry meaning, and
+> minimalist doesn't touch them.
+
+> [!IMPORTANT]
+> **Honest numbers, not vibes.** Minimalist never invents a savings figure.
+> Every claim under [Numbers, reproduced by you](#numbers-reproduced-by-you)
+> is either a real measured run or explicitly marked as not yet run — see that
+> section for the current status.
+
+## The part nobody else ships: the ledger
 
 Every "less code" tool tells you to trust the vibes. Minimalist keeps a
 ledger. Every time the descent rejects a dependency, an abstraction, or a
@@ -69,55 +93,55 @@ version is wrong — and it doesn't ship.
 
 Node.js 18+ on PATH (for the two lifecycle hooks; skills work without it).
 
-**Claude Code**
+<img src="assets/claude_logo.png" width="12" alt=""> **Claude Code**
 ```
 /plugin marketplace add DivyeshJayswal/minimalist
 /plugin install minimalist@minimalist
 ```
 Desktop app: Customize → personal plugins → Add from repository → repo URL.
 
-**Codex**
+<img src="assets/chatgpt_logo.png" width="12" alt=""> **Codex**
 ```bash
 codex plugin marketplace add DivyeshJayswal/minimalist
 ```
 `/plugins` → install Minimalist → `/hooks` → trust its two hooks → new thread.
 
-**GitHub Copilot CLI**
+<img src="assets/github_copilot_logo.png" width="12" alt=""> **GitHub Copilot CLI**
 ```bash
 copilot plugin marketplace add DivyeshJayswal/minimalist
 copilot plugin install minimalist@minimalist
 ```
 Commands are namespaced: `/minimalist:minimalist ultra`.
 
-**Gemini CLI**
+<img src="assets/gemini_logo.png" width="20" alt=""> **Gemini CLI**
 ```bash
 gemini extensions install https://github.com/DivyeshJayswal/minimalist
 ```
 
-**Antigravity CLI**
+<img src="assets/gemini_logo.png" width="20" alt=""> **Antigravity CLI**
 ```bash
 agy plugin install https://github.com/DivyeshJayswal/minimalist
 ```
 Reuses the Gemini extension; also ships `.agents/rules/` for always-on rules.
 
-**Pi agent harness**
+π **Pi agent harness**
 ```bash
 pi install git:github.com/DivyeshJayswal/minimalist
 ```
 
-**OpenCode**
+<img src="assets/opencode_logo.png" width="20" alt=""> **OpenCode**
 ```json
 { "plugin": ["minimalist-skill"] }
 ```
 Or from a checkout: `{ "plugin": ["./.opencode/plugins/minimalist.mjs"] }`.
 OpenCode also auto-loads this repo's `AGENTS.md`.
 
-**Hermes**
+☰ **Hermes**
 ```bash
 hermes plugins install DivyeshJayswal/minimalist --enable
 ```
 
-**OpenClaw**
+🦞 **OpenClaw**
 ```bash
 clawhub install @divyeshjayswal/minimalist
 ```
@@ -163,6 +187,10 @@ lite advises, full enforces, ultra ships the diff with ≤3 lines of prose. The
 guardrail holds at all three. `stop minimalist` / `normal mode` also works.
 
 ## Numbers, reproduced by you
+
+**Status: no real run published yet.** The harness is built and mock-validated;
+a real benchmark run hasn't happened. This section stays here so the day it
+does run, the number lands next to the command that reproduced it — not before.
 
 ```bash
 node benchmarks/run.js --repo <target-repo> --model haiku --n 4   # real run
@@ -213,6 +241,11 @@ CI runs ubuntu / macos / windows × Node 18/20/22.
 3. Bump versions in `package.json`, `plugin.yaml`, `.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, and `gemini-extension.json`.
 4. Commit, tag, and push to GitHub.
 5. Republish only registries that package a copy, such as npm/OpenCode packages or ClawHub. Git-based installs update from GitHub.
+
+## Star this repo
+
+Costs nothing, helps someone else find the smaller version of what they were
+about to build. Fair trade. ⭐
 
 ---
 
