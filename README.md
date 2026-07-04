@@ -1,4 +1,10 @@
-<h1 align="center">◇ Minimalist</h1>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="assets/minimalist_logo_light.png">
+    <img src="assets/minimalist_logo.png" alt="Minimalist logo" width="500">
+  </picture>
+</p>
+
 
 <p align="center">
   <em>Every line your agent didn't write is a line nobody has to fix at 3 a.m.</em>
@@ -7,7 +13,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT">
   <img src="https://img.shields.io/badge/runtime%20deps-0-111111?style=flat-square" alt="zero deps">
-  <img src="https://img.shields.io/badge/tests-49%20passing-111111?style=flat-square" alt="tests">
+  <img src="https://github.com/DivyeshJayswal/minimalist/actions/workflows/test.yml/badge.svg" alt="tests">
   <img src="https://img.shields.io/badge/receipts-not%20vibes-111111?style=flat-square" alt="receipts, not vibes">
 </p>
 
@@ -126,6 +132,18 @@ are pre-generated, copy the one you need: `.cursor/rules/minimalist.mdc`,
 `.kiro/steering/minimalist.md`, `.github/copilot-instructions.md`,
 `.devin-plugin/`, or generic `AGENTS.md`.
 
+## Update
+
+Most installs point back to this repo. After a release, Git-based installs
+update by pulling/reinstalling from GitHub; registry installs update from the
+registry they came from.
+
+| install type | examples | update path |
+|---|---|---|
+| Git-based | Gemini, Antigravity, Pi, local OpenCode, copied rule files | pull or reinstall from GitHub; copy rule files again if needed |
+| Marketplace/plugin wrapper | Claude Code, Codex, Copilot CLI, Hermes | update/reinstall through that tool's plugin command |
+| Registry copy | npm/OpenCode package, ClawHub/OpenClaw | publish the new package there, then update through that registry |
+
 **Uninstall**
 ```bash
 node scripts/uninstall.js
@@ -180,13 +198,21 @@ contradictory instructions.
 ## Development
 
 ```bash
-npm test              # 49 tests, node:test, zero dependencies
+npm test              # node:test, zero dependencies
 npm run mirrors       # regenerate per-agent rule copies from SKILL.md
 npm run mirrors:check # CI drift gate
 npm run bench:mock    # validate the benchmark pipeline for free
 ```
 
 CI runs ubuntu / macos / windows × Node 18/20/22.
+
+## Release
+
+1. Edit `skills/minimalist/SKILL.md`.
+2. Run `npm run mirrors`.
+3. Bump versions in `package.json`, `plugin.yaml`, `.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, and `gemini-extension.json`.
+4. Commit, tag, and push to GitHub.
+5. Republish only registries that package a copy, such as npm/OpenCode packages or ClawHub. Git-based installs update from GitHub.
 
 ---
 
