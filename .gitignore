@@ -7,7 +7,6 @@ benchmarks/full-stack-fastapi-template/
 benchmarks/competitors/
 *.tmp
 .DS_Store
-assets/benchmark-headline.svg
 benchmarks/arms/agent-skills-incremental.txt
 benchmarks/arms/caveman.txt
 benchmarks/arms/token-efficient.txt
