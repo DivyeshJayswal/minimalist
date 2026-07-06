@@ -1,5 +1,15 @@
 node_modules/
 benchmarks/arms/minimalist.txt
 benchmarks/results/*.json
+!benchmarks/results/2026-07-05-agentic.json
+benchmarks/agentic-upstream/
+benchmarks/full-stack-fastapi-template/
+benchmarks/competitors/
 *.tmp
 .DS_Store
+assets/benchmark-headline.svg
+benchmarks/arms/agent-skills-incremental.txt
+benchmarks/arms/caveman.txt
+benchmarks/arms/token-efficient.txt
+benchmarks/results/2026-07-05-agentic.md
+benchmarks/run-ponytail-agentic.ps1

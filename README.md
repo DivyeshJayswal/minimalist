@@ -7,7 +7,11 @@
 
 
 <p align="center">
-  <em>Fewer tokens, same output - and it remembers why, every time!</em>
+  <img src="assets/benchmark-headline.svg" alt="~41% less code (up to 88%) - ~24% cheaper - ~20% faster" width="760">
+</p>
+
+<p align="center">
+  <em>Make coding agents write less code, use fewer tokens, and skip the bloat.</em>
 </p>
 
 <p align="center">
@@ -19,12 +23,42 @@
 
 ---
 
-**What it does:** makes your AI agent produce less for the same result -
-less code, less prose, fewer unnecessary steps, fewer tokens spent getting
-there - and keeps a written record of every shortcut it took, so nobody
-has to take its word for it. It ships as two separate skills: `/minimalist`
-for coding tasks, `/minimalist-general` for everything else (writing,
-planning, research, decisions).
+**What it does:** Minimalist helps coding agents do less. It pushes them to
+write smaller diffs, use fewer tokens, skip extra dependencies, and avoid
+features you did not ask for. It also keeps a record of what it refused to
+build, so the same bloat does not come back later.
+
+It is minimal, but not reckless: it does not remove validation, auth, error
+handling, cleanup, tests, or secret-safety checks just to save lines.
+
+**In short:** in a real Claude Code LOC benchmark, Minimalist wrote on average about
+**41% less code**, used **24% fewer tokens**, cost **24% less**, and ran
+**20% faster** than no-skill baseline. All 288 LOC cells were correct.
+
+![Agentic benchmark](assets/benchmark-agentic.svg)
+
+This is a real agentic run, not a single-shot prompt: Claude Code edited a
+pinned FastAPI + React template and the benchmark scored the `git diff` it
+left behind.
+
+| arm | LOC | tokens | cost | time |
+|---|---:|---:|---:|---:|
+| baseline | 100% | 100% | 100% | 100% |
+| minimalist | 59% | 76% | 76% | 80% |
+| yagni-oneliner | 79% | 94% | 119% | 113% |
+| token-efficient | 112% | 121% | 132% | 143% |
+
+Raw files:
+
+- [`benchmarks/results/2026-07-05-agentic.md`](benchmarks/results/2026-07-05-agentic.md)
+- [`benchmarks/results/2026-07-05-agentic.json`](benchmarks/results/2026-07-05-agentic.json)
+
+It ships as two skills:
+
+- `/minimalist` for coding tasks: less code, fewer tokens, fewer invented
+  requirements, no unsafe shortcuts.
+- `/minimalist-general` for writing, planning, research, and decisions: the
+  same subtraction discipline without code-specific rules.
 
 Ask your agent for a date picker. Left alone, it installs a library, writes
 a wrapper component, a stylesheet, and a paragraph about timezones you
@@ -35,71 +69,26 @@ didn't ask for. With minimalist:
 <input type="date">
 ```
 
-**Minimalist** makes it stop and check first: does this need to exist → is it
-already in the codebase → does the stdlib have it → does the platform have it
-→ is it one line → *only then* write new code. Every step it skips, it says
-so — and now it writes that down too, not just says it once and forgets.
-`/minimalist-general` runs the same descent for non-coding work — same
-questions, asked about a plan or a document instead of a diff.
-
-<details>
-<summary>The longer version, if you want the vibe</summary>
-
-Same task, same result, fewer tokens spent getting there — because the
-agent stops reaching for a library, a wrapper, and a config file the moment
-a one-liner already does the job. Picture an auditor, not a hype man.
-Doesn't get excited about your new dependency. Doesn't say "nice work" to
-fifty lines that do the job of five. Reads the diff, asks what's
-load-bearing and what's decoration, and only signs off on the version that
-survives both questions. Every line it lets through has already been
-interrogated; every line it cuts, it writes down — so the audit trail
-outlives the conversation, and the same question never gets re-argued
-twice.
-
-</details>
+**Minimalist** makes the agent ask simple questions before it writes code:
+does this need to exist, is it already in the repo, does the language or
+browser already do it, can it be one line? Only after that does it write new
+code. Every rejected abstraction or dependency can be logged, so the same
+scope debate does not have to happen again next week.
 
 > [!TIP]
 > **Turn it on:** it's active by default the moment the plugin's installed.
 > Switch modes with `/minimalist lite|full|ultra|off`, or say "stop minimalist" /
 > "normal mode" to step out any time.
 
-> [!NOTE]
-> **Speak your tongue.** Prose-trimming only ever applies to *this skill's own*
-> explanations. Your code, your comments, your non-English or mixed-language
-> text are never "simplified" — articles and particles carry meaning, and
-> minimalist doesn't touch them.
-
 > [!IMPORTANT]
 > **Honest numbers, not vibes.** Minimalist never invents a savings figure.
-> Every claim under [Numbers, reproduced by you](#numbers-reproduced-by-you)
-> is either a real measured run or explicitly marked as not yet run — see that
-> section for the current status.
+> Every number above is a real measured run, not a guess.
 
-## Recent updates
+## The ledger
 
-- **`/minimalist-general`** — the same subtraction discipline, as a
-  separate skill for non-coding work (writing, planning, research). Doesn't
-  touch the coding skill's rules; use whichever one matches the task.
-- **Precedent check** — before reasoning about scope from scratch, the
-  agent checks this project's own rejection history (`scripts/check-precedent.js`)
-  and reuses a past decision instead of re-arguing it.
-- **The ledger** — every rejected dependency or abstraction gets logged to
-  a real file (`~/.minimalist/ledger.jsonl`), readable across sessions —
-  see [The ledger](#the-ledger-a-file-not-a-promise) below.
-- **Statusline** — shows real session cost/tokens and the ledger's
-  rejection count, no invented "saved" figure.
-
-## The ledger: a file, not a promise
-
-**In short:** every time the agent decides not to add a dependency or write
-extra code, that decision gets saved to a file on your machine — so you (or
-anyone on your team) can check later what it skipped and why, instead of
-just trusting it said so once in chat.
-
-Every "less code" tool tells you to trust the vibes. Minimalist keeps a
-ledger. Every time the descent rejects a dependency, an abstraction, or a
-speculative config option, it's logged — not just mentioned once in chat and
-gone:
+Every time the agent skips a dependency or a piece of extra code, it logs
+the decision to a file on your machine — so you can check later what it
+skipped and why, instead of just trusting a line in chat:
 
 ```
 $ node scripts/log-rejection.js --report
@@ -108,24 +97,10 @@ $ node scripts/log-rejection.js --report
 - [platform] date picker library -> <input type="date">
 - [yagni] config flag for a value that never changes
 - [stdlib] custom debounce helper -> AbortController + setTimeout
-
-By step:
-  platform: 1
-  yagni: 1
-  stdlib: 1
 ```
 
-`/minimalist-gain` reads that file, not the model's memory of the last five
-minutes. Cross-session, inspectable, `grep`-able. If your tech lead wants to
-know what the agent talked itself out of building this sprint, that's a
-ten-second `cat`, not a re-prompt and a shrug.
-
-## Not lazy — accountable
-
-Minimal never means unsafe. These are never cut, at any level: input
-validation, authN/authZ, rate limits, error handling on fallible ops,
-resource cleanup, tests. If a shorter version drops one of these, the shorter
-version is wrong — and it doesn't ship.
+`/minimalist-gain` reads this file back — real history, not the model's
+memory of the last five minutes.
 
 ## Install
 
@@ -228,69 +203,19 @@ own explanations to almost nothing. The safety guardrail never turns off,
 at any of the three. Say "stop minimalist" or "normal mode" to switch it
 off entirely.
 
-## Numbers, reproduced by you
-
-**In short:** we haven't published a real "X% less code" number yet, on
-purpose — the tool to measure it exists and you can run it yourself right
-now, on your own repo.
-
-**Status: no real run published yet.** The harness is built and mock-validated;
-a real benchmark run hasn't happened. This section stays here so the day it
-does run, the number lands next to the command that reproduced it — not before.
-
-```bash
-node benchmarks/run.js --repo <target-repo> --model haiku --n 4   # real run
-node benchmarks/run.js --mock                                      # free pipeline check
-```
-
-Scores the `git diff` a real agent leaves behind, not a single-shot prompt:
-LOC, tokens, cost, wall time, plus a 6-task adversarial safety tier (path
-traversal, SQLi, token forgery, malformed input, rate limits, authz) that
-fails a run if a guard line is deleted and not restored. Mock runs are
-watermarked "do not publish" — only real runs are. Every `benchmarks/arms/*.txt`
-becomes an arm, so you can drop in another project's ruleset and compare
-directly, yourself, on your own repo. We don't publish a number we didn't
-run.
-
 ## How it works
 
-**In short:** one instructions file gets copied into whatever format each AI
-tool expects, so you get the same rules everywhere without maintaining nine
-different versions by hand.
+Minimalist has one rulebook (`skills/minimalist/SKILL.md`). Every supported
+tool — Claude Code, Codex, Copilot, Gemini, OpenCode, and the rest — gets its
+own copy generated from that single file, so the rules stay identical
+everywhere instead of drifting between nine hand-maintained versions.
 
-One skill file (`skills/minimalist/SKILL.md`) is the source of truth; every
-per-agent copy is generated from it (`npm run mirrors`), and CI fails on
-drift — across ubuntu, macOS, and Windows. For Claude Code/Codex/Copilot it
-rides two lifecycle hooks (`UserPromptSubmit` injects the ruleset and parses
-`/minimalist` switches; `SubagentStart` makes subagents inherit the level).
-For Gemini/OpenCode/Pi it loads as extension context. For rule-file agents
-it's a generated copy. Level state lives in `~/.minimalist/config.json`,
-written atomically, merged never overwritten. Rejected scope lives in
-`~/.minimalist/ledger.jsonl`, appended never truncated.
+Your chosen level (`lite`/`full`/`ultra`/`off`) and the rejection ledger both
+persist in `~/.minimalist/`, so they carry over between sessions.
 
-If another instruction-injecting skill is detected (output-style or
-code-minimal), minimalist yields prose-style decisions to it and keeps code
-volume for itself, or applies the stricter rule on overlap — never
-contradictory instructions.
-
-## Development
-
-```bash
-npm test              # node:test, zero dependencies
-npm run mirrors       # regenerate per-agent rule copies from SKILL.md
-npm run mirrors:check # CI drift gate
-npm run bench:mock    # validate the benchmark pipeline for free
-```
-
-CI runs ubuntu / macos / windows × Node 18/20/22.
-
-## Release
-
-1. Edit `skills/minimalist/SKILL.md`.
-2. Run `npm run mirrors`.
-3. Bump versions in `package.json`, `plugin.yaml`, `.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, and `gemini-extension.json`.
-4. Commit, tag, and push to GitHub.
-5. Republish only registries that package a copy, such as npm/OpenCode packages or ClawHub. Git-based installs update from GitHub.
+If you're also running another instruction skill (like an output-style
+skill), minimalist won't fight it — it defers on prose style and keeps
+enforcing code-minimalism.
 
 ## Star this repo
 

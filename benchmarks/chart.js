@@ -11,7 +11,7 @@ function renderChart(rel, opts = {}) {
   const metrics = [
     ['loc', 'LOC'], ['tokens', 'tokens'], ['cost', 'cost'], ['time', 'time'],
   ];
-  const W = 900, H = 560, plotTop = 90, plotBottom = 420, plotLeft = 70, plotRight = 40;
+  const W = 900, H = 560, plotTop = opts.headline ? 125 : 90, plotBottom = 420, plotLeft = 70, plotRight = 40;
   const plotH = plotBottom - plotTop;
   const groupW = (W - plotLeft - plotRight) / metrics.length;
   const barW = Math.min(36, (groupW - 30) / arms.length);
@@ -22,6 +22,7 @@ function renderChart(rel, opts = {}) {
   s += `<rect width="${W}" height="${H}" fill="#0d1117"/>`;
   s += `<text x="${W / 2}" y="34" fill="#e6edf3" font-size="18" text-anchor="middle">Every metric vs the no-skill baseline</text>`;
   if (opts.subtitle) s += `<text x="${W / 2}" y="56" fill="#8b949e" font-size="12" text-anchor="middle">${esc(opts.subtitle)}</text>`;
+  if (opts.headline) s += `<text x="${W / 2}" y="104" fill="#e6edf3" font-size="15" font-weight="700" text-anchor="middle">${esc(opts.headline)}</text>`;
 
   // legend
   let lx = plotLeft;
@@ -55,16 +56,21 @@ function renderChart(rel, opts = {}) {
     }
   });
 
-  // safety line
-  s += `<text x="${plotLeft}" y="${plotBottom + 72}" fill="#8b949e" font-size="11">Safety, separate adversarial tier (guard-dropping traps). Higher is safer:</text>`;
-  let sx = plotLeft;
-  arms.forEach((a, i) => {
-    const pct = Math.round((rel[a].safe ?? 1) * 100);
-    const label = `${a} ${pct}%`;
-    s += `<text x="${sx}" y="${plotBottom + 94}" fill="${COLORS[i % COLORS.length]}" font-size="12">${esc(label)}</text>`;
-    sx += label.length * 7 + 30;
-  });
-  s += `<text x="${plotLeft}" y="${H - 14}" fill="#6e7681" font-size="10">Each bar = that arm's mean as % of the no-skill baseline (gray 100%). Lower is leaner / cheaper / faster.</text>`;
+  if (!opts.hideSafety) {
+    s += `<text x="${plotLeft}" y="${plotBottom + 72}" fill="#8b949e" font-size="11">${esc(opts.safetyTitle || 'Safety, separate adversarial tier (guard-dropping traps). Higher is safer:')}</text>`;
+    if (opts.safetyNote) {
+      s += `<text x="${plotLeft}" y="${plotBottom + 94}" fill="#c9d1d9" font-size="12">${esc(opts.safetyNote)}</text>`;
+    } else {
+      let sx = plotLeft;
+      arms.forEach((a, i) => {
+        const pct = Math.round((rel[a].safe ?? 1) * 100);
+        const label = `${a} ${pct}%`;
+        s += `<text x="${sx}" y="${plotBottom + 94}" fill="${COLORS[i % COLORS.length]}" font-size="12">${esc(label)}</text>`;
+        sx += label.length * 7 + 30;
+      });
+    }
+  }
+  s += `<text x="${plotLeft}" y="${H - 14}" fill="#6e7681" font-size="10">Each bar = that arm's ${esc(opts.aggregation || 'mean')} as % of the no-skill baseline (gray 100%). Lower is leaner / cheaper / faster.</text>`;
   s += `</svg>`;
   return s;
 }
