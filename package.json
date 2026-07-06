@@ -16,7 +16,6 @@
     "test": "node --test tests/check-precedent.test.js tests/chart.test.js tests/config.test.js tests/deconflict.test.js tests/hooks.test.js tests/instructions.test.js tests/judge.test.js tests/ledger.test.js tests/loc.test.js tests/mirrors.test.js tests/mode-tracker.test.js tests/skills.test.js && npm test --prefix pi-extension",
     "mirrors": "node scripts/build-mirrors.js",
     "mirrors:check": "node scripts/build-mirrors.js --check",
-    "bench:mock": "node benchmarks/run.js --mock",
     "bench": "node benchmarks/run.js"
   },
   "pi": { "extensions": ["./pi-extension/index.js"], "skills": ["./skills"] },

@@ -1,15 +1,11 @@
 #!/usr/bin/env node
 // Agentic benchmark harness.
 //
-// Real mode:  runs a headless coding agent (default: `claude -p`) once per
-//             task x arm x repetition inside a fresh clone of the target repo,
-//             then scores the git diff it leaves behind.
-// Mock mode:  --mock replaces the agent with a deterministic simulator so the
-//             whole pipeline (scoring, safety judge, chart, report) can be
-//             tested end-to-end with zero API cost.
+// Runs a headless coding agent (default: `claude -p`) once per task x arm x
+// repetition inside a fresh clone of the target repo, then scores the git
+// diff it leaves behind.
 //
 // Usage:
-//   node benchmarks/run.js --mock
 //   node benchmarks/run.js --repo /path/to/clone --n 10 --model haiku
 //   node benchmarks/run.js --agent-cmd 'claude -p {PROMPT} --append-system-prompt-file {ARM} --output-format json --dangerously-skip-permissions'
 //
@@ -18,7 +14,6 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const crypto = require('crypto');
 const { execSync, spawnSync } = require('child_process');
 const { locFromNumstat } = require('./loc');
 const { judgeSafety } = require('./judge');
@@ -28,11 +23,10 @@ const ROOT = path.join(__dirname, '..');
 const args = parseArgs(process.argv.slice(2));
 
 function parseArgs(argv) {
-  const a = { mock: false, smoke: false, n: 1, model: 'haiku', repo: null, agentCmd: null, testCmd: null };
+  const a = { smoke: false, n: 1, model: 'haiku', repo: null, agentCmd: null, testCmd: null };
   for (let i = 0; i < argv.length; i++) {
     const k = argv[i];
-    if (k === '--mock') a.mock = true;
-    else if (k === '--smoke') a.smoke = true;
+    if (k === '--smoke') a.smoke = true;
     else if (k === '--n') a.n = Number(argv[++i]) || 1;
     else if (k === '--model') a.model = argv[++i];
     else if (k === '--repo') a.repo = argv[++i];
@@ -91,64 +85,9 @@ function runAgentReal(task, arm, workdir) {
   }
 }
 
-// ---------- mock agent: deterministic per (task, arm, rep) ----------
-function seeded(str) {
-  const h = crypto.createHash('sha256').update(str).digest();
-  return (lo, hi) => lo + (h.readUInt32BE((seeded._i = ((seeded._i || 0) + 4) % 28)) % (hi - lo + 1));
-}
-// mock profiles: baseline (1.0, no skill) and minimalist (this repo's own
-// skill, self-measured) are known. caveman/ponytail use published-ladder
-// approximations for the *per-task-done* cost only — NOT for the memoization
-// mechanism, which they structurally lack (stateless ladders). Any other arm
-// falls back to an unbiased generic default. Mock output is watermarked
-// "do not publish"; only real runs are publishable.
-const PROFILES = {
-  baseline:   { loc: 1.00, tok: 1.00, sec: 1.00, guardDrop: 0.00, memoizes: false },
-  caveman:    { loc: 0.22, tok: 0.55, sec: 0.45, guardDrop: 0.15, memoizes: false },
-  ponytail:   { loc: 0.10, tok: 0.40, sec: 0.35, guardDrop: 0.08, memoizes: false },
-  minimalist: { loc: 0.12, tok: 0.42, sec: 0.36, guardDrop: 0.00, memoizes: true },
-};
-const GENERIC_PROFILE = { loc: 0.9, tok: 0.95, sec: 0.95, guardDrop: 0.02, memoizes: false };
-
-function runAgentMock(task, arm, workdir, rep) {
-  const rnd = seeded(`${task.id}:${arm.name}:${rep}`);
-  const profile = PROFILES[arm.name] || GENERIC_PROFILE;
-  const noise = rnd(90, 110) / 100;
-
-  // Mechanism the memoizing arm has and the stateless ladders don't:
-  //  - repeat task  → precedent short-circuit: reuse prior decision, ~no work
-  //  - nobuild task → reject-and-stop: one line, zero diff
-  // A stateless arm runs every task fully, every time.
-  const shortCircuit = profile.memoizes && (task.kind === 'repeat' || task.kind === 'nobuild');
-
-  if (shortCircuit) {
-    // reject-and-stop / precedent-reuse: a one-line answer, no code emitted.
-    execSync('git commit -q --allow-empty -m noop', { cwd: workdir });
-    const tokens = Math.round(rnd(400, 900) * noise); // read prompt + ledger, emit one line
-    return { seconds: +(rnd(60, 130) / 100 * noise).toFixed(2), tokens, cost: +(tokens * 3e-7).toFixed(5) };
-  }
-
-  const baseLoc = rnd(8, 60);
-  const addLines = Math.max(1, Math.round(baseLoc * profile.loc * noise));
-  const f = path.join(workdir, `${task.id}.py`);
-  fs.writeFileSync(f, Array.from({ length: addLines }, (_, i) => `line_${i} = ${i}`).join('\n') + '\n');
-  execSync('git add -A', { cwd: workdir });
-  // safety tasks: guard-dropping arms remove a guard line
-  if (task.guard_patterns && rnd(1, 100) <= profile.guardDrop * 100) {
-    const g = path.join(workdir, 'guarded.py');
-    const existing = fs.readFileSync(g, 'utf8').split('\n');
-    fs.writeFileSync(g, existing.filter(l => !/validate|verify|rate|auth|\.\./i.test(l)).join('\n'));
-    execSync('git add -A', { cwd: workdir });
-  }
-  const tokens = Math.round(29000 * profile.tok * noise);
-  return { seconds: +(5.7 * profile.sec * noise).toFixed(2), tokens, cost: +(tokens * 3e-7).toFixed(5) };
-}
-
 function resetLedger(armName) {
-  // Real mode: clear the home-dir ledger so this arm starts with no precedent
-  // and its repeats fire only on precedent this arm itself recorded. Mock mode
-  // simulates the mechanism via task.kind and never touches the real ledger.
-  if (args.mock) return;
+  // Clear the home-dir ledger so this arm starts with no precedent and its
+  // repeats fire only on precedent this arm itself recorded.
   try {
     const { ledgerPath } = require(path.join(ROOT, 'hooks', 'ledger.js'));
     fs.rmSync(ledgerPath(), { force: true });
@@ -157,18 +96,9 @@ function resetLedger(armName) {
 
 function freshWorkdir(taskId) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), `minibench-${taskId}-`));
-  if (args.mock) {
-    execSync('git init -q && git -c user.email=b@b -c user.name=b commit -q --allow-empty -m init', { cwd: dir, shell: true });
-    fs.writeFileSync(path.join(dir, 'guarded.py'),
-      ['def download(p):', '    if ".." in p: raise ValueError  # path traversal guard',
-       'def login(u):', '    rate_limiter.check(u)', '    verify_signature(u.token)',
-       'def parse(b):', '    schema.validate(b)'].join('\n') + '\n');
-    execSync('git add -A && git -c user.email=b@b -c user.name=b commit -qm seed', { cwd: dir, shell: true });
-  } else {
-    const src = args.repo;
-    if (!src) { console.error('Real mode needs --repo <path-or-url> (a git repo the agent will edit).'); process.exit(1); }
-    execSync(`git clone -q --depth 1 ${JSON.stringify(src)} ${JSON.stringify(dir)}`, { shell: true });
-  }
+  const src = args.repo;
+  if (!src) { console.error('Needs --repo <path-or-url> (a git repo the agent will edit).'); process.exit(1); }
+  execSync(`git clone -q --depth 1 ${JSON.stringify(src)} ${JSON.stringify(dir)}`, { shell: true });
   return dir;
 }
 
@@ -193,7 +123,6 @@ function mean(xs) {
 // just to confirm, before the full spend, that the real agent obeys Step 0 and
 // that the OpenRouter/Claude route does tool-use (leaves a diff, returns cost).
 function runSmoke(cfg, arms) {
-  if (args.mock) { console.error('--smoke is a real-run pre-flight; drop --mock.'); process.exit(1); }
   const arm = arms.find(a => a.name === 'minimalist');
   if (!arm) { console.error('minimalist arm missing'); process.exit(1); }
   const novel = cfg.feature_tasks.find(t => t.kind === 'novel');
@@ -236,7 +165,7 @@ function runSmoke(cfg, arms) {
 
   if (args.smoke) return runSmoke(cfg, arms);
 
-  console.log(`arms: ${arms.map(a => a.name).join(', ')} | n=${args.n} | mode=${args.mock ? 'MOCK' : 'REAL'}`);
+  console.log(`arms: ${arms.map(a => a.name).join(', ')} | n=${args.n}`);
 
   const raw = [];
   for (const arm of arms) {
@@ -248,7 +177,7 @@ function runSmoke(cfg, arms) {
       for (let rep = 0; rep < args.n; rep++) {
         const wd = freshWorkdir(task.id);
         try {
-          const run = args.mock ? runAgentMock(task, arm, wd, rep) : runAgentReal(task, arm, wd);
+          const run = runAgentReal(task, arm, wd);
           const s = score(wd, task);
           raw.push({ arm: arm.name, task: task.id, kind: 'feature', taskKind: task.kind || 'novel', rep, ...run, ...s });
         } finally {
@@ -260,7 +189,7 @@ function runSmoke(cfg, arms) {
     for (const task of cfg.safety_tasks) {
       const wd = freshWorkdir(task.id);
       try {
-        const run = args.mock ? runAgentMock(task, arm, wd, 0) : runAgentReal(task, arm, wd);
+        const run = runAgentReal(task, arm, wd);
         const s = score(wd, task);
         raw.push({ arm: arm.name, task: task.id, kind: 'safety', rep: 0, ...run, ...s });
       } finally {
@@ -298,7 +227,7 @@ function runSmoke(cfg, arms) {
 
   // markdown report
   const fmtPct = v => `${v < 1 ? '' : '+'}${Math.round((v - 1) * 100)}%`;
-  let md = `# Agentic benchmark — ${stamp} (${args.mock ? 'MOCK pipeline run' : `real, model=${args.model}, n=${args.n}`})\n\n`;
+  let md = `# Agentic benchmark — ${stamp} (real, model=${args.model}, n=${args.n})\n\n`;
   md += `| vs no-skill baseline | LOC | tokens | cost | time | safe |\n|---|---|---|---|---|---|\n`;
   for (const a of armNames.filter(x => x !== 'baseline'))
     md += `| **${a}** | ${fmtPct(rel[a].loc)} | ${fmtPct(rel[a].tokens)} | ${fmtPct(rel[a].cost)} | ${fmtPct(rel[a].time)} | ${Math.round(rel[a].safe * 100)}% |\n`;
@@ -323,11 +252,10 @@ function runSmoke(cfg, arms) {
     md += `\n_novel = cold task (stateless ladders' strength); repeat = precedent short-circuit; nobuild = reject-and-stop. The memoizing arm's margin lives in the last two columns._\n`;
   }
 
-  if (args.mock) md += `\n> MOCK run: numbers are simulated to validate the pipeline. Publish only REAL runs.\n`;
   fs.writeFileSync(path.join(__dirname, 'results', `${stamp}-agentic.md`), md);
 
   // chart
-  const svg = renderChart(rel, { subtitle: args.mock ? 'MOCK pipeline validation — do not publish' : `Claude Code, ${args.model}, ${cfg.feature_tasks.length} tasks, n=${args.n}`, baseline: { loc: base.loc, tokens: base.tokens, cost: base.cost, time: base.time }, aggregation: 'mean' });
+  const svg = renderChart(rel, { subtitle: `Claude Code, ${args.model}, ${cfg.feature_tasks.length} tasks, n=${args.n}`, baseline: { loc: base.loc, tokens: base.tokens, cost: base.cost, time: base.time }, aggregation: 'mean' });
   fs.mkdirSync(path.join(ROOT, 'assets'), { recursive: true });
   fs.writeFileSync(path.join(ROOT, 'assets', 'benchmark-agentic.svg'), svg);
   console.log(`wrote ${path.relative(ROOT, outJson)}, .md and assets/benchmark-agentic.svg`);

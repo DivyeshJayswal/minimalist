@@ -54,16 +54,6 @@ cd benchmarks\agentic-upstream\benchmarks\agentic
 python run.py --rescore runs\<stamp>
 ```
 
-## Pipeline check (free)
-
-```bash
-node benchmarks/run.js --mock
-```
-
-Simulates the agent deterministically so scoring, safety judging, the report
-and the SVG chart can be verified end-to-end. Mock output is watermarked —
-never publish it as a result.
-
 ## Arms
 
 Every `benchmarks/arms/*.txt` becomes an arm. `baseline.txt` is empty;

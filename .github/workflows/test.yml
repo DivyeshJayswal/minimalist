@@ -13,4 +13,3 @@ jobs:
         with: { node-version: "${{ matrix.node }}" }
       - run: npm test
       - run: node scripts/build-mirrors.js --check
-      - run: node benchmarks/run.js --mock
