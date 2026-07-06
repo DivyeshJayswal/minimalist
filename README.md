@@ -15,10 +15,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT">
-  <img src="https://img.shields.io/badge/runtime%20deps-0-111111?style=flat-square" alt="zero deps">
+  <img src="https://img.shields.io/badge/license-MIT-3178c6?style=flat" alt="MIT">
+  <img src="https://img.shields.io/npm/v/minimalist-skill?style=flat&color=cb3837" alt="npm version">
+  <img src="https://img.shields.io/github/v/tag/DivyeshJayswal/minimalist?style=flat&color=8250df" alt="release tag">
+  <img src="https://img.shields.io/node/v/minimalist-skill?style=flat&color=339933" alt="node engines">
   <img src="https://github.com/DivyeshJayswal/minimalist/actions/workflows/test.yml/badge.svg" alt="tests">
-  <img src="https://img.shields.io/github/last-commit/DivyeshJayswal/minimalist?style=flat-square&color=111111" alt="last commit">
+  <img src="https://img.shields.io/github/last-commit/DivyeshJayswal/minimalist?style=flat&color=6e7681" alt="last commit">
 </p>
 
 ---
