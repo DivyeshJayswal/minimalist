@@ -46,6 +46,7 @@ left behind.
 | arm | LOC | tokens | cost | time |
 |---|---:|---:|---:|---:|
 | baseline | 100% | 100% | 100% | 100% |
+| caveman | 85% | 72% | 76% | 80% |
 | minimalist | 59% | 76% | 76% | 80% |
 | yagni-oneliner | 79% | 94% | 119% | 113% |
 | token-efficient | 112% | 121% | 132% | 143% |
